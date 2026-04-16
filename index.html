@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concierge — India Women's Sport Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body { background: #14110D; color: #EAD8BE; font-family: 'Cormorant Garamond', serif; -webkit-font-smoothing: antialiased; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade { animation: fadeUp 0.35s ease both; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // ─── PALETTE ──────────────────────────────────────────────
+    const C = {
+      bg:       '#14110D',
+      surface:  '#1B1712',
+      card:     '#232018',
+      border:   '#2B2218',
+      gold:     '#C8944A',
+      goldDim:  '#7A5A2A',
+      goldFaint:'rgba(200,148,74,0.08)',
+      text:     '#EAD8BE',
+      muted:    '#79694F',
+      dim:      '#3A3025',
+      absent:   { bg:'#3B1414', tc:'#C47070' },
+      minimal:  { bg:'#3B2C0A', tc:'#C8944A' },
+      active:   { bg:'#193A29', tc:'#6DBD88' },
+    };
+
+    const SPORTS       = ['Cricket','Hockey','Football','Kabaddi','Badminton','Athletics','Boxing','Wrestling'];
+    const SPORT_SHORT  = ['CRI','HOC','FBL','KBD','BDM','ATH','BOX','WRS'];
+
+    // ─── DATA ─────────────────────────────────────────────────
+    const CATEGORIES = [
+      { name:'Luxury & Lifestyle',       presence:[0,0,0,0,0,0,0,0], gap:8,
+        insight:'Zero presence across all eight sports. Premium brands have entirely bypassed Indian women\'s sport. No incumbent to displace — first-mover advantage is enormous.' },
+      { name:'Real Estate',              presence:[1,0,0,0,0,0,0,0], gap:7,
+        insight:'Only individual cricket deals (Harmanpreet/Omaxe, post-WC 2025). No league-level presence in any sport. Aspirational audience narrative is an obvious fit.' },
+      { name:'Quick Commerce & D2C',     presence:[1,0,0,0,0,0,0,0], gap:7,
+        insight:'Swiggy, Zomato, Nykaa, Myntra — absent at league level despite targeting the exact same young Indian female audience. The audience match is near-perfect.' },
+      { name:'Technology & Electronics', presence:[2,0,0,0,1,0,0,0], gap:6,
+        insight:'WPL has ChatGPT/OpenAI as Premier Partner (2026-27). Badminton has individual deals. Six sports: nothing. Category with arguably the most global bridge potential.' },
+      { name:'Beauty & Personal Care',   presence:[1,0,0,0,1,0,0,0], gap:6,
+        insight:'Individual endorsements only in cricket and badminton. No beauty brand has activated at league level. The audience is exactly who these brands need — and they\'re not there.' },
+      { name:'Food & Nutrition',         presence:[2,0,0,0,1,0,0,0], gap:6,
+        insight:'Cricket (Bournvita, Herbalife) and badminton individual deals only. ASMITA programme reaches 70,000 women across 15 sports — grassroots activation untouched by any food brand.' },
+      { name:'Healthcare & Insurance',   presence:[2,0,0,0,1,0,0,0], gap:6,
+        insight:'HDFC Life, PNB MetLife in cricket only. Badminton has individual deals. Six sports with no financial wellness activation despite growing athlete welfare conversation.' },
+      { name:'Automotive',               presence:[2,0,0,0,1,0,0,0], gap:6,
+        insight:'Hyundai, CEAT active in cricket. Hero MotoCorp left women\'s football (IWL) in 2023 — first major brand exit. Tata\'s WC-winner SUV gift was PR, not a structured deal.' },
+      { name:'Beverages',                presence:[2,1,0,0,1,0,0,0], gap:5,
+        insight:'WPL (Bisleri, Kingfisher Water) + individual (Red Bull/Mandhana). Five sports with no beverage brand presence despite massive live and digital viewership.' },
+      { name:'Banking & Finance',        presence:[2,1,0,0,1,0,0,0], gap:5,
+        insight:'SBI, HDFC, PNB in cricket. Five sports with no financial sector activation at any level. Financial inclusion + women athletes is an untapped narrative.' },
+      { name:'Entertainment & Media',    presence:[2,1,1,0,1,0,0,0], gap:4,
+        insight:'JioHotstar covers cricket/hockey broadcast. YouTube-only for football IWL. Kabaddi, athletics, boxing, wrestling: no media activation deals.' },
+      { name:'Sportswear & Apparel',     presence:[2,1,1,0,2,1,1,0], gap:2,
+        insight:'Most active category. Nike, PUMA across cricket and badminton. Individual deals in athletics and boxing. Wrestling remains absent. Least white space.' },
+    ];
+
+    const ATHLETES = [
+      { name:'Smriti Mandhana',   sport:'Cricket',      age:29, following:'14M+',  sponsorCount:16, usScore:95, tier:'S',
+        sponsors:['Nike','Hyundai','Red Bull','HUL Rexona','SBI','Gulf Oil','Herbalife','Mastercard','Bournvita','Wrangler','Dabur','PNB MetLife'],
+        usNote:'Only Indian female athlete in global top-10 for social sponsorship value (Sportico/KORE). Signed to Barbie Dream Team (Mattel, US) — first cricketer globally. Commands ₹1.5–2Cr per deal. 14M+ social following post-WC.',
+        gap:['Luxury','Streaming platforms','Consumer tech hardware'] },
+      { name:'Jemimah Rodrigues', sport:'Cricket',      age:24, following:'3.3M',  sponsorCount:3,  usScore:82, tier:'A',
+        sponsors:['HMD Nokia'],
+        usNote:'Post-WC endorsement value: ₹60L → ₹1.5Cr+. English-fluent, high personality, culturally textured. Christian faith, Mumbai working-class roots. Strongest US lifestyle and fashion crossover case in Indian women\'s sport.',
+        gap:['Sportswear','Beverage','Beauty','Lifestyle','Banking','Tech'] },
+      { name:'Harmanpreet Kaur',  sport:'Cricket',      age:35, following:'8M+',   sponsorCount:8,  usScore:68, tier:'A',
+        sponsors:['PUMA','CEAT','HDFC Life','Boost','Omaxe'],
+        usNote:'World Cup-winning captain. Tier-2 city origin, Deputy Superintendent of Police in Punjab. Grassroots narrative resonates across markets. WC visibility boosts international reach.',
+        gap:['Tech','Premium automotive','International banking','Lifestyle'] },
+      { name:'Shafali Verma',     sport:'Cricket',      age:21, following:'3M',    sponsorCount:3,  usScore:58, tier:'B',
+        sponsors:['PUMA','SG','My11Circle'],
+        usNote:'Player of the Match, 2025 WC Final. 21 years old — 15+ year career runway. 50% following growth post-WC to 3M. Aggressive style translates visually. Significant headroom.',
+        gap:['Beverage','Banking','Beauty','Lifestyle','Tech','Nutrition'] },
+      { name:'PV Sindhu',         sport:'Badminton',    age:30, following:'6M+',   sponsorCount:9,  usScore:62, tier:'A',
+        sponsors:['PUMA','Bridgestone','multiple'],
+        usNote:'Established global brand and benchmark for what non-cricket women athletes can achieve commercially in India. Portfolio plateaued post-Paris 2024. Limited new category upside.',
+        gap:['Portfolio mature — limited new category upside'] },
+      { name:'Nikhat Zareen',     sport:'Boxing',       age:28, following:'1.5M',  sponsorCount:2,  usScore:45, tier:'B',
+        sponsors:['Baseline Ventures client'],
+        usNote:'2x World Champion. Muslim woman athlete — compelling identity narrative for US market. Sport infrastructure gap limits immediate activation. Most undercommercialized elite athlete in India.',
+        gap:['Sportswear','Banking','FMCG','Beverage','Beauty','Lifestyle','Tech'] },
+      { name:'Ritu Negi',         sport:'Kabaddi',      age:26, following:'200K',  sponsorCount:0,  usScore:12, tier:'C',
+        sponsors:[],
+        usNote:'Led India to 2025 World Cup unbeaten. Zero commercial portfolio despite being a world champion. Future value contingent on PKL women\'s league launch — Mashal / JioStar committed.',
+        gap:['Everything — zero commercial portfolio'] },
+      { name:'Mirabai Chanu',     sport:'Weightlifting',age:30, following:'900K',  sponsorCount:2,  usScore:30, tier:'C',
+        sponsors:['SAI','Manipur Government'],
+        usNote:'Olympic silver medalist (Paris 2024) supported almost entirely by government, not private brands. Classic pipeline failure — elite performance, near-zero commercial infrastructure.',
+        gap:['Sportswear','Nutrition','Banking','Automotive','FMCG','Beauty'] },
+    ];
+
+    const US_ACTIVE = [
+      { brand:'Google',          cat:'Technology', detail:'ICC Women\'s first global tech partnership. Android, Gemini, Google Pay, Pixel — launched for Women\'s World Cup 2025.',        depth:'Tournament'       },
+      { brand:'OpenAI / ChatGPT',cat:'AI / Tech',  detail:'WPL 2026-27 Premier Partner. First AI company as Premier Partner of an Indian women\'s league.',                                depth:'League'           },
+      { brand:'Nike',            cat:'Sportswear', detail:'Smriti Mandhana + PV Sindhu individual endorsements. No league-level deal.',                                                     depth:'Individual'       },
+      { brand:'Red Bull',        cat:'Beverage',   detail:'Smriti Mandhana brand ambassador. No India women\'s league activation.',                                                         depth:'Individual'       },
+      { brand:'Mastercard',      cat:'Finance',    detail:'Mandhana ambassador + ICC Women\'s events partner.',                                                                              depth:'Ind + Tournament' },
+      { brand:'Mattel / Barbie', cat:'Lifestyle',  detail:'Mandhana in Barbie Dream Team — first cricketer globally. Engineered by Baseline Ventures.',                                    depth:'Individual'       },
+      { brand:'Herbalife',       cat:'Nutrition',  detail:'Mandhana brand ambassador. Individual deal only.',                                                                               depth:'Individual'       },
+    ];
+
+    const US_ABSENT = [
+      { cat:'Streaming & Content',      brands:'Netflix, Apple TV+, Amazon Prime Video', opp:'Women\'s sport content pipeline. India-US diaspora audience of 35M. No US streamer has commissioned Indian women\'s sport content.' },
+      { cat:'E-Commerce',               brands:'Amazon (brand activation)',               opp:'Amazon India actively sponsors men\'s cricket. Zero women\'s sports activation. Same audience, different investment logic.'         },
+      { cat:'Social / Creator Economy', brands:'Meta, Snapchat, TikTok (global)',         opp:'Creator economy × women athletes is the fastest-growing US sports marketing category. India untouched.'                           },
+      { cat:'Fintech',                  brands:'PayPal, Visa (beyond Mastercard), Stripe',opp:'Digital payments growth narrative perfectly aligns with India\'s economic story and young women as consumers.'                     },
+      { cat:'Luxury',                   brands:'All major US luxury brands',              opp:'Zero presence across all Indian women\'s sports. No incumbent. The aspirational Indian woman athlete story is unoccupied territory.'},
+      { cat:'Sportswear (League-Level)',brands:'Adidas, Under Armour, New Balance',       opp:'Nike individual deals only. No US sportswear brand has activated at league level in any Indian women\'s sport.'                    },
+    ];
+
+    const DEALS = [
+      { date:'Mar 2026', title:'ASMITA Special Edition',        detail:'250 locations, 2 lakh girl participants on International Women\'s Day. Govt-backed, SAI-implemented.',                     tag:'Policy',    origin:'IN'    },
+      { date:'Nov 2025', title:'Mandhana × Mattel / Barbie',    detail:'First cricketer globally in the Barbie Dream Team. US brand activation. Engineered by Baseline Ventures.',                 tag:'Landmark',  origin:'US'    },
+      { date:'Nov 2025', title:'WPL × ChatGPT + Kingfisher',    detail:'New Premier Partners for 2026-27 seasons. Part of ₹48Cr commercial deal covering two seasons.',                           tag:'Partnership',origin:'US+IN' },
+      { date:'Nov 2025', title:'Harmanpreet Kaur × Omaxe',      detail:'Real estate ambassador — new category entry post-WC. First real estate brand deal for an Indian woman cricketer.',        tag:'Category',  origin:'IN'    },
+      { date:'Nov 2025', title:'Tata Motors × WC Squad',        detail:'Each 2025 World Cup winner received a Tata Sierra SUV. High-visibility PR moment.',                                       tag:'PR',        origin:'IN'    },
+      { date:'2025',     title:'ICC Women × Google',             detail:'ICC\'s first women\'s-only global tech partnership across Android, Gemini, Google Pay, Pixel.',                          tag:'Landmark',  origin:'US'    },
+      { date:'Sep 2025', title:'WPL — First Chairman Appointed', detail:'Jayesh George (KCA President) named first-ever WPL Chairman at BCCI AGM. Dedicated governance milestone.',               tag:'Governance',origin:'IN'    },
+      { date:'Aug 2025', title:'National Sports Governance Act', detail:'India\'s first statutory sports governance framework. Mandates minimum 4 women per federation executive committee.',      tag:'Policy',    origin:'IN'    },
+    ];
+
+    const TAG_STYLE = {
+      'Landmark':   { bg:'#2A1A40', tc:'#B070D4' },
+      'Partnership':{ bg:'#1A2840', tc:'#6FA0D8' },
+      'Category':   { bg:'#3B2C0A', tc:C.gold    },
+      'Policy':     { bg:'#193A29', tc:'#6DBD88' },
+      'Governance': { bg:'#193A29', tc:'#6DBD88' },
+      'PR':         { bg:'#3A2010', tc:'#D49070' },
+    };
+
+    // ─── SHARED COMPONENTS ────────────────────────────────────
+    function StatRow({ stats }) {
+      return (
+        <div style={{ display:'flex', gap:10, marginBottom:24, flexWrap:'wrap' }}>
+          {stats.map((s,i) => (
+            <div key={i} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:6, padding:'10px 16px', flex:'1', minWidth:90 }}>
+              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:18, color:C.gold, fontWeight:500, marginBottom:2 }}>{s.val}</div>
+              <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9,  color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em' }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function SectionHeader({ title, sub }) {
+      return (
+        <div style={{ marginBottom:20 }}>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:400, color:C.text, marginBottom:6 }}>{title}</h2>
+          <p  style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:11, color:C.muted }}>{sub}</p>
+        </div>
+      );
+    }
+
+    function FilterBar({ options, active, onSelect }) {
+      return (
+        <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:12 }}>
+          {options.map(o => (
+            <button key={o} onClick={() => onSelect(o)} style={{
+              fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'4px 12px', borderRadius:4,
+              border:`1px solid ${active===o ? C.gold : C.border}`,
+              background: active===o ? C.goldFaint : 'transparent',
+              color: active===o ? C.gold : C.muted,
+              letterSpacing:'0.04em',
+            }}>{o}</button>
+          ))}
+        </div>
+      );
+    }
+
+    // ─── GAP MAP ──────────────────────────────────────────────
+    const PRESENCE = [
+      { bg:'#3B1414', tc:'#C47070', label:'Absent'  },
+      { bg:'#3B2C0A', tc:'#C8944A', label:'Minimal' },
+      { bg:'#193A29', tc:'#6DBD88', label:'Active'  },
+    ];
+
+    function GapMap() {
+      const [sel, setSel] = useState(null);
+      return (
+        <div>
+          <SectionHeader title="Brand Intelligence Gap Map" sub="Sponsorship presence across Indian women's sports — ranked by commercial gap" />
+          <StatRow stats={[
+            { val:'12',   label:'Categories'    },
+            { val:'8',    label:'Sports tracked' },
+            { val:'$900M',label:'Market by 2030' },
+            { val:'8/8',  label:'Gap in Luxury'  },
+          ]} />
+          {/* Legend */}
+          <div style={{ display:'flex', gap:16, marginBottom:18, alignItems:'center', flexWrap:'wrap' }}>
+            {PRESENCE.map(p => (
+              <div key={p.label} style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <div style={{ width:9, height:9, borderRadius:'50%', background:p.tc, opacity:0.8 }} />
+                <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, color:C.muted }}>{p.label}</span>
+              </div>
+            ))}
+            <div style={{ marginLeft:'auto', fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.dim }}>
+              {SPORT_SHORT.join(' · ')}
+            </div>
+          </div>
+          {/* Cards */}
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))', gap:10 }}>
+            {CATEGORIES.map((cat, i) => {
+              const isOpen = sel === i;
+              const gapTc  = cat.gap >= 7 ? PRESENCE[0].tc : cat.gap >= 5 ? C.gold : PRESENCE[2].tc;
+              const gapBg  = cat.gap >= 7 ? PRESENCE[0].bg : cat.gap >= 5 ? PRESENCE[1].bg : PRESENCE[2].bg;
+              return (
+                <div key={cat.name} className="fade"
+                  style={{ animationDelay:`${i*0.04}s`, background:isOpen?C.card:C.surface,
+                    border:`1px solid ${isOpen?C.goldDim:C.border}`, borderRadius:8,
+                    padding:'15px 16px', cursor:'pointer', transition:'border-color 0.15s, background 0.15s' }}
+                  onClick={() => setSel(isOpen ? null : i)}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:12 }}>
+                    <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, fontWeight:500, color:C.text, flex:1, lineHeight:1.2, paddingRight:10 }}>
+                      {cat.name}
+                    </div>
+                    <div style={{ flexShrink:0, fontFamily:"'IBM Plex Mono',monospace", fontSize:9,
+                      background:gapBg, color:gapTc, padding:'2px 8px', borderRadius:4, whiteSpace:'nowrap' }}>
+                      {cat.gap}/8 gap
+                    </div>
+                  </div>
+                  <div style={{ display:'flex', gap:7 }}>
+                    {cat.presence.map((p, si) => (
+                      <div key={si} title={`${SPORTS[si]}: ${PRESENCE[p].label}`} style={{
+                        width:10, height:10, borderRadius:'50%', flexShrink:0,
+                        background:PRESENCE[p].tc, opacity:p===0?0.25:p===1?0.6:1,
+                      }} />
+                    ))}
+                  </div>
+                  {isOpen && (
+                    <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:12, marginTop:12 }}>
+                      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:14, fontStyle:'italic', color:C.muted, lineHeight:1.75 }}>
+                        {cat.insight}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── ATHLETES ─────────────────────────────────────────────
+    function Athletes() {
+      const [sel, setSel]      = useState(null);
+      const [filter, setFilter]= useState('All');
+      const sports   = ['All', ...new Set(ATHLETES.map(a => a.sport))];
+      const filtered = filter === 'All' ? ATHLETES : ATHLETES.filter(a => a.sport === filter);
+      const TIER_C   = { S:{c:'#FFD168',bg:'#3D2E00'}, A:{c:C.gold,bg:C.goldDim+'50'}, B:{c:'#8BA88B',bg:'#1F3020'}, C:{c:C.muted,bg:C.card} };
+      return (
+        <div>
+          <SectionHeader title="Athlete Intelligence" sub="Commercial profiles, brand gaps, and US market viability scores" />
+          <FilterBar options={sports} active={filter} onSelect={s => { setFilter(s); setSel(null); }} />
+          <div style={{ marginTop:20 }}>
+            <StatRow stats={[
+              { val:'8',  label:'Profiled'        },
+              { val:'1',  label:'With 10+ brands' },
+              { val:'2',  label:'Zero sponsors'   },
+              { val:'95', label:'Top US score'    },
+            ]} />
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(265px,1fr))', gap:10 }}>
+            {filtered.map((a, i) => {
+              const isOpen = sel === i;
+              const tc     = TIER_C[a.tier];
+              return (
+                <div key={a.name} className="fade"
+                  style={{ animationDelay:`${i*0.05}s`, background:isOpen?C.card:C.surface,
+                    border:`1px solid ${isOpen?C.goldDim:C.border}`, borderRadius:8,
+                    padding:'15px 16px', cursor:'pointer', transition:'all 0.15s' }}
+                  onClick={() => setSel(isOpen ? null : i)}>
+                  <div style={{ display:'flex', justifyContent:'space-between', marginBottom:10 }}>
+                    <div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:600, color:C.text }}>{a.name}</div>
+                      <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted, marginTop:2 }}>{a.sport} · {a.following} followers</div>
+                    </div>
+                    <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9,
+                      border:`1px solid ${tc.c}`, background:tc.bg, color:tc.c,
+                      padding:'2px 8px', borderRadius:4, height:'fit-content', flexShrink:0 }}>
+                      {a.tier}-tier
+                    </div>
+                  </div>
+                  <div style={{ marginBottom:10 }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+                      <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted, letterSpacing:'0.06em' }}>US MARKET SCORE</span>
+                      <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, color:C.gold }}>{a.usScore}/100</span>
+                    </div>
+                    <div style={{ height:3, background:C.dim, borderRadius:2 }}>
+                      <div style={{ height:'100%', width:`${a.usScore}%`, background:`linear-gradient(to right,${C.goldDim},${C.gold})`, borderRadius:2 }} />
+                    </div>
+                  </div>
+                  <div style={{ display:'flex', justifyContent:'space-between', fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted }}>
+                    <span>{a.sponsorCount} brand{a.sponsorCount!==1?'s':''}</span>
+                    <span style={{ color:a.sponsorCount===0?'#C47070':a.sponsorCount<4?C.gold:'#6DBD88' }}>
+                      {a.sponsorCount===0?'⚠ unsponsored':a.sponsorCount<4?'↑ undervalued':'✓ active'}
+                    </span>
+                  </div>
+                  {isOpen && (
+                    <div style={{ marginTop:14, borderTop:`1px solid ${C.border}`, paddingTop:14 }}>
+                      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:14, fontStyle:'italic', color:C.muted, lineHeight:1.75, marginBottom:14 }}>
+                        {a.usNote}
+                      </p>
+                      {a.sponsors.length > 0 && (
+                        <div style={{ marginBottom:12 }}>
+                          <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.dim, marginBottom:6, letterSpacing:'0.06em' }}>CURRENT SPONSORS</div>
+                          <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>
+                            {a.sponsors.map(s => (
+                              <span key={s} style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 8px', borderRadius:3, background:C.card, color:C.muted }}>{s}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.dim, marginBottom:6, letterSpacing:'0.06em' }}>OPEN CATEGORIES</div>
+                      <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>
+                        {a.gap.map(g => (
+                          <span key={g} style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 8px', borderRadius:3, background:'#3B2C0A', color:C.gold }}>{g}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── GLOBAL CONNECTOR ─────────────────────────────────────
+    function GlobalConnector() {
+      const [tab, setTab] = useState('active');
+      const DEPTH_C = {
+        'Tournament'      :{ bg:'#2A1A40', tc:'#B070D4' },
+        'League'          :{ bg:'#193A29', tc:'#6DBD88' },
+        'Individual'      :{ bg:C.card,    tc:C.muted   },
+        'Ind + Tournament':{ bg:'#2A1A40', tc:'#B070D4' },
+      };
+      const subTabs = [['active','🇺🇸 → 🇮🇳  Active'],['absent','🇺🇸 White Space'],['athletes','🇮🇳 → 🇺🇸  Athletes']];
+      return (
+        <div>
+          <SectionHeader title="Global Connector" sub="United States ↔ India intelligence layer" />
+          <FilterBar options={subTabs.map(t=>t[0])} active={tab} onSelect={setTab} />
+          {/* override labels */}
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:12, marginBottom:20 }}>
+            {subTabs.map(([k,l]) => (
+              <button key={k} onClick={() => setTab(k)} style={{
+                fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'4px 12px', borderRadius:4,
+                border:`1px solid ${tab===k?C.gold:C.border}`,
+                background:tab===k?C.goldFaint:'transparent',
+                color:tab===k?C.gold:C.muted,
+              }}>{l}</button>
+            ))}
+          </div>
+
+          {tab === 'active' && (
+            <div>
+              <StatRow stats={[{ val:'7',label:'US brands active'},{val:'1',label:'League-level'},{val:'2',label:'Tournament'},{val:'4',label:'Individual only'}]} />
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {US_ACTIVE.map((b,i) => {
+                  const dc = DEPTH_C[b.depth] || { bg:C.card, tc:C.muted };
+                  return (
+                    <div key={b.brand} className="fade" style={{ animationDelay:`${i*0.05}s`, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:'14px 16px' }}>
+                      <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8, flexWrap:'wrap', gap:6 }}>
+                        <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:500, color:C.text }}>{b.brand}</span>
+                        <div style={{ display:'flex', gap:6 }}>
+                          <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 8px', borderRadius:3, background:dc.bg, color:dc.tc }}>{b.depth}</span>
+                          <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 8px', borderRadius:3, background:C.card, color:C.muted }}>{b.cat}</span>
+                        </div>
+                      </div>
+                      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:14, fontStyle:'italic', color:C.muted, lineHeight:1.65 }}>{b.detail}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {tab === 'absent' && (
+            <div>
+              <StatRow stats={[{val:'6',label:'High-value gaps'},{val:'35M',label:'Diaspora in N. America'},{val:'$0',label:'Luxury in WSI'},{val:'0',label:'US streamers active'}]} />
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {US_ABSENT.map((b,i) => (
+                  <div key={b.cat} className="fade" style={{ animationDelay:`${i*0.05}s`, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:'14px 16px' }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:8, flexWrap:'wrap', gap:6 }}>
+                      <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:17, fontWeight:500, color:C.text }}>{b.cat}</span>
+                      <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 8px', borderRadius:3, background:'#3B1414', color:'#C47070' }}>absent</span>
+                    </div>
+                    <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:'#C47070', marginBottom:8 }}>{b.brands}</div>
+                    <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:14, fontStyle:'italic', color:C.muted, lineHeight:1.65 }}>{b.opp}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === 'athletes' && (
+            <div>
+              <p style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, color:C.muted, marginBottom:16 }}>Indian athletes ranked by US market viability score</p>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {[...ATHLETES].sort((a,b) => b.usScore - a.usScore).map((a,i) => (
+                  <div key={a.name} className="fade" style={{ animationDelay:`${i*0.04}s`, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:'14px 16px' }}>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                      <div>
+                        <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, fontWeight:500, color:C.text }}>{a.name}</span>
+                        <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted, marginLeft:10 }}>{a.sport}</span>
+                      </div>
+                      <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:14, color:C.gold, fontWeight:500 }}>{a.usScore}</span>
+                    </div>
+                    <div style={{ height:3, background:C.dim, borderRadius:2, marginBottom:10 }}>
+                      <div style={{ height:'100%', width:`${a.usScore}%`, background:`linear-gradient(to right,${C.goldDim},${C.gold})`, borderRadius:2 }} />
+                    </div>
+                    <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:13, fontStyle:'italic', color:C.muted, lineHeight:1.65 }}>{a.usNote}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ─── DEAL TRACKER ─────────────────────────────────────────
+    function DealTracker() {
+      return (
+        <div>
+          <SectionHeader title="Deal Tracker" sub="Partnerships, endorsements, and structural moves — most recent first" />
+          <StatRow stats={[
+            { val:'8',    label:'Deals logged'   },
+            { val:'3',    label:'US brand deals' },
+            { val:'₹48Cr',label:'WPL deal value' },
+            { val:'2',    label:'Landmark moves' },
+          ]} />
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {DEALS.map((d, i) => {
+              const ts = TAG_STYLE[d.tag] || { bg:C.card, tc:C.muted };
+              return (
+                <div key={i} className="fade" style={{ animationDelay:`${i*0.04}s`, background:C.surface, border:`1px solid ${C.border}`, borderRadius:8, padding:'14px 16px', display:'flex', gap:14, alignItems:'flex-start' }}>
+                  <div style={{ flexShrink:0, fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted, paddingTop:2, width:52, lineHeight:1.5 }}>{d.date}</div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
+                      <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:15, fontWeight:500, color:C.text }}>{d.title}</span>
+                      <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'2px 7px', borderRadius:3, background:ts.bg, color:ts.tc }}>{d.tag}</span>
+                      <span style={{ fontSize:12, marginLeft:'auto' }}>{d.origin==='US'?'🇺🇸':d.origin==='US+IN'?'🇺🇸🇮🇳':'🇮🇳'}</span>
+                    </div>
+                    <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:13, fontStyle:'italic', color:C.muted, lineHeight:1.65 }}>{d.detail}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── APP SHELL ────────────────────────────────────────────
+    const TABS = [
+      { k:'gap',       l:'Gap Map'  },
+      { k:'athletes',  l:'Athletes' },
+      { k:'connector', l:'Global'   },
+      { k:'deals',     l:'Deals'    },
+    ];
+
+    function App() {
+      const [tab, setTab] = useState('gap');
+      return (
+        <div style={{ minHeight:'100vh', background:C.bg, color:C.text }}>
+          {/* ── Header ── */}
+          <header style={{
+            position:'sticky', top:0, zIndex:100,
+            background:C.bg, borderBottom:`1px solid ${C.border}`,
+            padding:'0 20px', display:'flex', alignItems:'center', height:52,
+          }}>
+            <div style={{ display:'flex', alignItems:'center', gap:10, marginRight:'auto' }}>
+              <div style={{ width:7, height:7, background:C.gold, transform:'rotate(45deg)', flexShrink:0 }} />
+              <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:12, letterSpacing:'0.18em', color:C.text, textTransform:'uppercase' }}>Concierge</span>
+              <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.muted, letterSpacing:'0.04em' }}>India Women's Sport Intelligence</span>
+            </div>
+            <nav style={{ display:'flex', gap:2 }}>
+              {TABS.map(t => (
+                <button key={t.k} onClick={() => setTab(t.k)} style={{
+                  fontFamily:"'IBM Plex Mono',monospace", fontSize:9, padding:'6px 12px', borderRadius:4,
+                  border:`1px solid ${tab===t.k?C.gold:'transparent'}`,
+                  background:'transparent',
+                  color:tab===t.k?C.gold:C.muted,
+                  letterSpacing:'0.04em',
+                }}>{t.l}</button>
+              ))}
+            </nav>
+          </header>
+
+          {/* ── Main ── */}
+          <main style={{ maxWidth:900, margin:'0 auto', padding:'28px 20px 60px' }}>
+            {tab==='gap'       && <GapMap />}
+            {tab==='athletes'  && <Athletes />}
+            {tab==='connector' && <GlobalConnector />}
+            {tab==='deals'     && <DealTracker />}
+          </main>
+
+          {/* ── Footer ── */}
+          <footer style={{ borderTop:`1px solid ${C.border}`, padding:20, textAlign:'center' }}>
+            <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:9, color:C.dim, letterSpacing:'0.12em' }}>
+              CONCIERGE · INDIA WOMEN'S SPORT INTELLIGENCE · BETA
+            </span>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
