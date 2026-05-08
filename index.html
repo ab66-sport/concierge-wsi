@@ -54,21 +54,21 @@ const CATEGORIES=[
   {name:'Food & Nutrition',presence:[2,0,0,0,1,0,0,0],gap:6,insight:'Cricket and badminton individual deals only. ASMITA reaches 70,000 women across 15 sports — a grassroots pipeline untouched by any food brand.'},
   {name:'Healthcare & Insurance',presence:[2,0,0,0,1,0,0,0],gap:6,insight:'HDFC Life, PNB MetLife in cricket only. Six sports with no financial wellness activation despite the growing athlete welfare conversation in India.'},
   {name:'Automotive',presence:[2,0,0,0,1,0,0,0],gap:6,insight:'Hyundai, CEAT in cricket. Hero MotoCorp left women\'s football in 2023 — first major brand exit. Gap across six sports.'},
-  {name:'Beverages',presence:[2,1,0,0,1,0,0,0],gap:5,insight:'WPL (Bisleri, Kingfisher Water) + individual (Red Bull/Mandhana). Five sports with no beverage presence despite massive viewership.'},
+  {name:'Beverages',presence:[2,1,0,0,1,0,0,0],gap:5,insight:'WPL (Bisleri, Kingfisher Water) + individual (Red Bull/Mandhana, Red Bull/Jemimah). Five sports with no beverage presence despite massive viewership.'},
   {name:'Banking & Finance',presence:[2,1,0,0,1,0,0,0],gap:5,insight:'SBI, HDFC, PNB in cricket. Five sports with no financial sector activation. Financial inclusion + women athletes is an untapped narrative.'},
   {name:'Entertainment & Media',presence:[2,1,1,0,1,0,0,0],gap:4,insight:'JioHotstar covers cricket/hockey. YouTube-only for IWL football. Kabaddi, athletics, boxing, wrestling: no media activation deals.'},
-  {name:'Sportswear & Apparel',presence:[2,1,1,0,2,1,1,0],gap:2,insight:'Most active category. Nike, PUMA across cricket and badminton. Individual deals in athletics and boxing. Wrestling still absent.'},
+  {name:'Sportswear & Apparel',presence:[2,1,1,0,2,1,1,0],gap:2,insight:'Most active category. Adidas holds the BCCI team kit deal (₹250Cr, to 2028) covering the women\'s team. Nike and PUMA active via individual deals across cricket and badminton. Athletics and boxing have individual deals. Wrestling still absent.'},
 ]
 
 const ATHLETES=[
-  {name:'Smriti Mandhana',sport:'Cricket',age:29,following:'14M+',sponsorCount:16,usScore:95,tier:'S',
-   sponsors:['Nike','Hyundai','Red Bull','HUL Rexona','SBI','Gulf Oil','Herbalife','Mastercard','Bournvita','Wrangler','Dabur','PNB MetLife'],
-   usNote:'Only Indian female athlete in global top-10 for social sponsorship value (Sportico/KORE). Signed to Barbie Dream Team (Mattel) — first cricketer globally. Commands ₹1.5–2Cr per deal.',
+  {name:'Smriti Mandhana',sport:'Cricket',age:29,following:'22M+',sponsorCount:17,usScore:95,tier:'S',
+   sponsors:['Nike','Hyundai','Red Bull','HUL Rexona','SBI','Gulf Oil','Herbalife','Mastercard','Bournvita','Wrangler','Dabur','PNB MetLife','Rado'],
+   usNote:'Only Indian female athlete in global top-10 for social sponsorship value (Sportico/KORE). Signed to Barbie Dream Team (Mattel) — first cricketer globally. WPL 2026 Orange Cap (377 runs). Latest deal: Rado (Apr 2026). Commands ₹1.5–2Cr per deal.',
    gap:['Luxury','Streaming','Consumer tech']},
-  {name:'Jemimah Rodrigues',sport:'Cricket',age:24,following:'3.3M',sponsorCount:3,usScore:82,tier:'A',
-   sponsors:['HMD Nokia'],
-   usNote:'Post-WC value: ₹60L → ₹1.5Cr+. English-fluent, high personality, culturally textured. Christian faith, Mumbai working-class roots. Strongest US lifestyle/fashion crossover case.',
-   gap:['Sportswear','Beverage','Beauty','Lifestyle','Banking']},
+  {name:'Jemimah Rodrigues',sport:'Cricket',age:24,following:'4M+',sponsorCount:5,usScore:82,tier:'A',
+   sponsors:['HMD Nokia','Red Bull','Tvarra (equity)'],
+   usNote:'Elevated to BCCI Grade A (2025-26). Post-WC value: ₹60L → ₹1.5Cr+. English-fluent, high personality, culturally textured. First Indian woman cricketer with an equity-led brand deal (Tvarra helmets). Strongest US lifestyle/fashion crossover case.',
+   gap:['Sportswear','Beauty','Lifestyle','Banking']},
   {name:'Harmanpreet Kaur',sport:'Cricket',age:35,following:'8M+',sponsorCount:8,usScore:68,tier:'A',
    sponsors:['PUMA','CEAT','HDFC Life','Boost','Omaxe'],
    usNote:'World Cup-winning captain. Tier-2 city origin, Deputy Superintendent of Police in Punjab. Grassroots narrative resonates across markets.',
@@ -81,18 +81,18 @@ const ATHLETES=[
    sponsors:['PUMA','Bridgestone','multiple'],
    usNote:'Benchmark for non-cricket women athletes. Portfolio plateaued post-Paris 2024. Important proof-of-concept; limited new category upside.',
    gap:['Portfolio mature']},
-  {name:'Nikhat Zareen',sport:'Boxing',age:28,following:'1.5M',sponsorCount:2,usScore:45,tier:'B',
-   sponsors:['Baseline Ventures'],
-   usNote:'2x World Champion. Muslim woman athlete — compelling narrative especially for US market. Sport infrastructure gap limits immediate activation.',
-   gap:['Sportswear','Banking','FMCG','Beverage','Beauty','Lifestyle']},
+  {name:'Nikhat Zareen',sport:'Boxing',age:28,following:'1.5M',sponsorCount:3,usScore:45,tier:'B',
+   sponsors:['Adidas','Welspun','SAI (TOPS)'],
+   usNote:'2x World Champion + World Boxing Cup Finals 2025 gold. Muslim woman athlete — compelling narrative especially for US market. Adidas personal deal predates her being part of the Adidas-kitted India team. Sport infrastructure gap limits immediate activation.',
+   gap:['FMCG','Beverage','Beauty','Lifestyle','Banking']},
   {name:'Ritu Negi',sport:'Kabaddi',age:26,following:'200K',sponsorCount:0,usScore:12,tier:'C',
    sponsors:[],
    usNote:'Led India to 2025 World Cup unbeaten. Zero commercial portfolio despite being a world champion. Future value contingent on PKL women\'s league launch.',
    gap:['Everything — zero commercial portfolio']},
-  {name:'Mirabai Chanu',sport:'Weightlifting',age:30,following:'900K',sponsorCount:2,usScore:30,tier:'C',
-   sponsors:['SAI','Manipur Govt'],
-   usNote:'Olympic silver medalist (Paris 2024). Almost entirely government-funded. Classic pipeline failure: elite performance, near-zero commercial infrastructure.',
-   gap:['Sportswear','Nutrition','Banking','Automotive','FMCG']},
+  {name:'Mirabai Chanu',sport:'Weightlifting',age:30,following:'900K',sponsorCount:6,usScore:30,tier:'C',
+   sponsors:['Adidas','Amway Nutrilite','Britannia','Limca Sportz','Star Cement','Amrutanjan'],
+   usNote:'Olympic silver medalist (Tokyo 2020), finished 4th at Paris 2024 by 1kg. Managed by IOS Sports. Has a genuine commercial portfolio — the pipeline failure is visibility and sport infrastructure, not brand interest.',
+   gap:['Automotive','Banking','Premium FMCG','Streaming']},
 ]
 
 const ONES_TO_WATCH=[
@@ -113,10 +113,10 @@ const ONES_TO_WATCH=[
 const LEAGUES=[
   {name:"Women's Premier League",abbr:'WPL',sport:'Cricket',season:'4th (2026)',teams:5,
    broadcaster:'Star Sports (TV) + JioHotstar (digital)',
-   titleSponsor:'Tata',sponsors:['ChatGPT','Kingfisher Water','Bisleri','CEAT'],
+   titleSponsor:'Tata',sponsors:['ChatGPT','L\'Oréal','Lakme','SBI','Amul','Kalyan Jewellers','Kingfisher Water','Bisleri','CEAT','Ashok Leyland'],
    dealValue:'₹48Cr (2026-27)',maturity:2,
-   keyMetric:'185M viewers on JioHotstar — 2025 WC Final',
-   insight:'The only Indian women\'s league with genuine premium inventory. Sponsorship valued as a standalone property, not bundled with IPL. Season 5 will test whether growth is structural or peak.'},
+   keyMetric:'Sponsorship spend ₹40Cr (2023) → ₹130Cr (2026) — 3x in 3 seasons',
+   insight:'The only Indian women\'s league with genuine premium inventory. WPL 2026 champion: RCB (second title). Sponsorship tripled in three years; brands no longer testing but committing at scale. AI brands (ChatGPT) entering alongside legacy FMCG signals a structural shift in who sees this audience as valuable.'},
   {name:"Women's Hockey India League",abbr:'WHIL',sport:'Hockey',season:'2nd (2025-26)',teams:4,
    broadcaster:'Streaming only — no TV deal',
    titleSponsor:'None confirmed',sponsors:['JSW Soorma','Shrachi Bengal Tigers'],
@@ -141,7 +141,7 @@ const US_ACTIVE=[
   {brand:'Google',cat:'Technology',detail:"ICC Women's first global tech partnership. Android, Gemini, Google Pay, Pixel — for Women's World Cup 2025.",depth:'Tournament'},
   {brand:'OpenAI / ChatGPT',cat:'AI / Tech',detail:'WPL 2026-27 Premier Partner. First AI company as Premier Partner of an Indian women\'s league.',depth:'League'},
   {brand:'Nike',cat:'Sportswear',detail:'Mandhana + Sindhu individual endorsements. No league-level deal.',depth:'Individual'},
-  {brand:'Red Bull',cat:'Beverage',detail:'Smriti Mandhana brand ambassador. No India women\'s league activation.',depth:'Individual'},
+  {brand:'Red Bull',cat:'Beverage',detail:'Smriti Mandhana and Jemimah Rodrigues both brand ambassadors. No India women\'s league activation.',depth:'Individual'},
   {brand:'Mastercard',cat:'Finance',detail:'Mandhana ambassador + ICC Women\'s events partner.',depth:'Ind + Tournament'},
   {brand:'Mattel / Barbie',cat:'Lifestyle',detail:'Mandhana in Barbie Dream Team — first cricketer globally. Engineered by Baseline Ventures.',depth:'Individual'},
   {brand:'Herbalife',cat:'Nutrition',detail:'Mandhana brand ambassador. Individual deal only.',depth:'Individual'},
@@ -150,19 +150,25 @@ const US_ACTIVE=[
 const US_ABSENT=[
   {cat:'Streaming & Content',brands:'Netflix, Apple TV+, Amazon Prime Video',opp:"Women's sport content pipeline. India-US diaspora of 35M. No US streamer has commissioned Indian women's sport content."},
   {cat:'E-Commerce',brands:'Amazon (brand activation)',opp:'Amazon India actively sponsors men\'s cricket. Zero women\'s sports activation. Same audience, different investment logic.'},
-  {cat:'Social / Creator Economy',brands:'Meta, Snapchat, TikTok (global)',opp:'Creator economy × women athletes is the fastest-growing US sports marketing category. India entirely untouched.'},
+  {cat:'Social / Creator Economy',brands:'Meta, Snapchat, YouTube',opp:'Creator economy × women athletes is the fastest-growing US sports marketing category. No platform has built a structured creator program around Indian women athletes.'},
   {cat:'Fintech',brands:'PayPal, Visa (beyond Mastercard), Stripe',opp:"Digital payments narrative perfectly aligns with India's economic story and young women as consumers."},
   {cat:'Luxury',brands:'All major US luxury brands',opp:"Zero presence across all Indian women's sports. No incumbent. The aspirational Indian woman athlete story is entirely unoccupied."},
-  {cat:'Sportswear (League-Level)',brands:'Adidas, Under Armour, New Balance',opp:"Nike individual deals only. No US sportswear brand at league level in any Indian women's sport."},
+  {cat:'Sportswear (League-Level)',brands:'Under Armour, New Balance',opp:"Adidas holds the BCCI team kit deal (covers women's team). Nike active via individual deals. But no sportswear brand has activated at women's league level — WPL, WHIL, IWL all without a sportswear partner."},
 ]
 
 const DEALS=[
   {date:'Mar 2026',title:'ASMITA Special Edition',detail:'250 locations, 2 lakh girl participants on International Women\'s Day. Govt-backed, SAI-implemented.',tag:'Policy',origin:'IN'},
+  {date:'Feb 2026',title:'BCCI Women\'s Central Contracts 2025-26',detail:'Jemimah Rodrigues elevated to Grade A — joins Harmanpreet, Mandhana, Deepti. Eight new entrants to the contract list including Pratika Rawal and Vaishnavi Sharma.',tag:'Governance',origin:'IN'},
+  {date:'Feb 2026',title:'RCB win WPL 2026',detail:'Royal Challengers Bengaluru claim their second WPL title, defeating Delhi Capitals. Mandhana wins Orange Cap (377 runs). Highest successful chase in WPL history.',tag:'Leagues',origin:'IN'},
+  {date:'Jan 2026',title:'Jemimah Rodrigues × Tvarra',detail:'Equity partner deal with women-specific cricket helmet brand — the first equity-led brand association for an Indian woman cricketer. Marks a shift beyond traditional endorsement.',tag:'Landmark',origin:'IN'},
+  {date:'Nov 2025',title:'India win ICC Women\'s ODI World Cup',detail:'India beat South Africa by 52 runs in Navi Mumbai — maiden title. Deepti Sharma Player of the Tournament (215 runs, 22 wickets). Commercial inflection point for the entire ecosystem.',tag:'Landmark',origin:'IN'},
   {date:'Nov 2025',title:'Mandhana × Mattel / Barbie',detail:'First cricketer globally in the Barbie Dream Team. US brand activation. Engineered by Baseline Ventures.',tag:'Landmark',origin:'US'},
   {date:'Nov 2025',title:'WPL × ChatGPT + Kingfisher',detail:'New Premier Partners for 2026-27. Part of ₹48Cr commercial deal covering two seasons.',tag:'Partnership',origin:'US+IN'},
   {date:'Nov 2025',title:'Harmanpreet Kaur × Omaxe',detail:'Real estate ambassador — new category entry post-WC. First real estate brand deal for an Indian woman cricketer.',tag:'Category',origin:'IN'},
   {date:'Nov 2025',title:'Tata Motors × WC Squad',detail:'Each 2025 World Cup winner received a Tata Sierra SUV. High-visibility PR moment.',tag:'PR',origin:'IN'},
+  {date:'Oct 2025',title:'Red Bull × Jemimah Rodrigues',detail:'Endorsement deal covering campaigns, events, content and youth development programs. Rodrigues joins Mandhana in Red Bull\'s India women\'s cricket roster.',tag:'Partnership',origin:'US'},
   {date:'2025',title:'ICC Women × Google',detail:"ICC's first women's-only global tech partnership across Android, Gemini, Google Pay, Pixel.",tag:'Landmark',origin:'US'},
+  {date:'Sep 2025',title:'Apollo Tyres × BCCI',detail:'₹579 crore, 2.5-year lead jersey sponsorship covering senior, A, and U19 teams — men\'s and women\'s. Replaced Dream11 after the Online Gaming Regulation Bill.',tag:'Partnership',origin:'IN'},
   {date:'Sep 2025',title:'WPL — First Chairman Appointed',detail:'Jayesh George named first-ever WPL Chairman at BCCI AGM. Dedicated governance milestone.',tag:'Governance',origin:'IN'},
   {date:'Aug 2025',title:'National Sports Governance Act',detail:"India's first statutory sports governance framework. Mandates minimum 4 women per federation executive committee.",tag:'Policy',origin:'IN'},
 ]
@@ -174,6 +180,7 @@ const TAG_STYLE={
   'Policy':{bg:'#0A2818',tc:'#3DD68C'},
   'Governance':{bg:'#0A2818',tc:'#3DD68C'},
   'PR':{bg:'#3A2010',tc:'#D49070'},
+  'Leagues':{bg:'#1A2840',tc:'#6FA0D8'},
 }
 
 const SIGNAL_STYLE={
@@ -485,7 +492,7 @@ function GlobalConnector(){
       )}
       {sub==='absent'&&(
         <div>
-          <StatRow stats={[{val:'6',label:'High-value gaps'},{val:'35M',label:'Diaspora in N. America'},{val:'$0',label:'Luxury in WSI'},{val:'0',label:'US streamers active'}]}/>
+          <StatRow stats={[{val:'6',label:'High-value gaps'},{val:'6.5M',label:'Indian diaspora N. America'},{val:'$0',label:'Luxury in WSI'},{val:'0',label:'US streamers active'}]}/>
           <div style={{display:'flex',flexDirection:'column',gap:8}}>
             {US_ABSENT.map((b,i)=>(
               <div key={b.cat} className="fade" style={{animationDelay:`${i*0.05}s`,background:C.surface,border:`1px solid ${C.border}`,borderRadius:8,padding:'14px 16px'}}>
@@ -531,7 +538,7 @@ function DealTracker(){
   return(
     <div>
       <SectionHeader title="Deal Tracker" sub="Partnerships, endorsements, and structural moves — most recent first"/>
-      <StatRow stats={[{val:'8',label:'Deals logged'},{val:'3',label:'US brand deals'},{val:'₹48Cr',label:'WPL deal value'},{val:'2',label:'Landmark moves'}]}/>
+      <StatRow stats={[{val:'14',label:'Deals logged'},{val:'4',label:'US brand deals'},{val:'₹579Cr',label:'Apollo Tyres deal'},{val:'4',label:'Landmark moves'}]}/>
       <div style={{display:'flex',flexDirection:'column',gap:8}}>
         {DEALS.map((d,i)=>{
           const ts=TAG_STYLE[d.tag]||{bg:C.card,tc:C.muted}
@@ -604,7 +611,6 @@ function App(){
       </main>
       <footer style={{borderTop:`1px solid ${C.border}`,padding:'18px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
         <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:C.dim,letterSpacing:'0.12em'}}>CONCIERGE · INDIA WOMEN'S SPORT INTELLIGENCE · BETA</span>
-        {/* Replace [Your Name] below with your actual name */}
         <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:C.dim,letterSpacing:'0.08em'}}>Built by A.B.</span>
       </footer>
     </div>
